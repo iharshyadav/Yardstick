@@ -37,31 +37,31 @@ export interface Transaction {
 
 export async function getTransactions(): Promise<Transaction[]> {
   try {
-    console.log("Fetching transactions...")
+    // console.log("Fetching transactions...")
     const client = await clientPromise
     const db = client.db("finance-tracker")
     const transactions = await db.collection("transactions").find({}).sort({ date: -1, createdAt: -1 }).toArray()
 
-    console.log(`Found ${transactions.length} transactions`)
+    // console.log(`Found ${transactions.length} transactions`)
     return transactions.map((t) => ({
       ...t,
       _id: t._id.toString(),
     })) as Transaction[]
   } catch (error) {
-    console.error("Failed to fetch transactions:", error)
+    // console.error("Failed to fetch transactions:", error)
     return []
   }
 }
 
 export async function getTransaction(id: string): Promise<Transaction | null> {
   try {
-    console.log("Fetching transaction:", id)
+    // console.log("Fetching transaction:", id)
     const client = await clientPromise
     const db = client.db("finance-tracker")
     const transaction = await db.collection("transactions").findOne({ _id: new ObjectId(id) })
 
     if (!transaction) {
-      console.log("Transaction not found:", id)
+      // console.log("Transaction not found:", id)
       return null
     }
 
@@ -70,7 +70,7 @@ export async function getTransaction(id: string): Promise<Transaction | null> {
       _id: transaction._id.toString(),
     } as Transaction
   } catch (error) {
-    console.error("Failed to fetch transaction:", error)
+    // console.error("Failed to fetch transaction:", error)
     return null
   }
 }
@@ -82,12 +82,12 @@ export async function createTransaction(data: {
   category: string
 }): Promise<void> {
   try {
-    console.log("Connecting to MongoDB...")
+    // console.log("Connecting to MongoDB...")
     const client = await clientPromise
-    console.log("Connected to MongoDB")
+    // console.log("Connected to MongoDB")
 
     const db = client.db("finance-tracker")
-    console.log("Using database: finance-tracker")
+    // console.log("Using database: finance-tracker")
 
     const result = await db.collection("transactions").insertOne({
       ...data,
@@ -95,9 +95,9 @@ export async function createTransaction(data: {
       updatedAt: new Date(),
     })
 
-    console.log("Transaction inserted with ID:", result.insertedId)
+    // console.log("Transaction inserted with ID:", result.insertedId)
   } catch (error) {
-    console.error("Failed to create transaction:", error)
+    // console.error("Failed to create transaction:", error)
     throw error
   }
 }
@@ -112,7 +112,7 @@ export async function updateTransaction(
   },
 ): Promise<void> {
   try {
-    console.log("Updating transaction:", id)
+    // console.log("Updating transaction:", id)
     const client = await clientPromise
     const db = client.db("finance-tracker")
 
@@ -126,30 +126,30 @@ export async function updateTransaction(
       },
     )
 
-    console.log("Transaction update result:", result)
+    // console.log("Transaction update result:", result)
   } catch (error) {
-    console.error("Failed to update transaction:", error)
+    // console.error("Failed to update transaction:", error)
     throw error
   }
 }
 
 export async function deleteTransaction(id: string): Promise<void> {
   try {
-    console.log("Deleting transaction:", id)
+    // console.log("Deleting transaction:", id)
     const client = await clientPromise
     const db = client.db("finance-tracker")
 
     const result = await db.collection("transactions").deleteOne({ _id: new ObjectId(id) })
-    console.log("Transaction delete result:", result)
+    // console.log("Transaction delete result:", result)
   } catch (error) {
-    console.error("Failed to delete transaction:", error)
+    // console.error("Failed to delete transaction:", error)
     throw error
   }
 }
 
 export async function getMonthlyExpenses() {
   try {
-    console.log("Fetching monthly expenses...")
+    // console.log("Fetching monthly expenses...")
     const client = await clientPromise
     const db = client.db("finance-tracker")
 
@@ -178,7 +178,7 @@ export async function getMonthlyExpenses() {
     ]
 
     const results = await db.collection("transactions").aggregate(pipeline).toArray()
-    console.log("Monthly expenses results:", results)
+    // console.log("Monthly expenses results:", results)
 
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -187,14 +187,14 @@ export async function getMonthlyExpenses() {
       expenses: result.expenses,
     }))
   } catch (error) {
-    console.error("Failed to fetch monthly expenses:", error)
+    // console.error("Failed to fetch monthly expenses:", error)
     return []
   }
 }
 
 export async function getCategoryBreakdown() {
   try {
-    console.log("Fetching category breakdown...")
+    // console.log("Fetching category breakdown...")
     const client = await clientPromise
     const db = client.db("finance-tracker")
 
@@ -213,7 +213,7 @@ export async function getCategoryBreakdown() {
     ]
 
     const results = await db.collection("transactions").aggregate(pipeline).toArray()
-    console.log("Category breakdown results:", results)
+    // console.log("Category breakdown results:", results)
 
     return results.map((result) => ({
       category: result._id,
@@ -222,7 +222,7 @@ export async function getCategoryBreakdown() {
       type: result.type,
     }))
   } catch (error) {
-    console.error("Failed to fetch category breakdown:", error)
+    // console.error("Failed to fetch category breakdown:", error)
     return []
   }
 }
